@@ -1,11 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalDouble;
 
 public class StudentManagementSystem {
 
     public static void main(String[] args) {
-        
         ArrayList<Student> studentRoster = new ArrayList<>();
 
         
@@ -14,16 +12,20 @@ public class StudentManagementSystem {
         studentRoster.add(new Student("S003", "Luana", 32, List.of("Physiology", "Genetics")));
         studentRoster.add(new Student("S004", "Gustavo", 47, List.of("Public Health", "Epidemiology")));
 
-       
+        
+        System.out.println("All Students:");
         studentRoster.forEach(Student::display);
 
         
+        System.out.println("\nStudents Enrolled in Anatomy:");
         displayStudentsEnrolledInCourse(studentRoster, "Anatomy");
 
         
+        System.out.println("\nUpdating age of Pedro (S001) to 24:");
         setStudentAge(studentRoster, "S001", 24);
+        studentRoster.forEach(Student::display);
 
-       
+        
         displayMeanStudentAge(studentRoster);
     }
 
@@ -41,52 +43,11 @@ public class StudentManagementSystem {
     }
 
     private static void displayMeanStudentAge(ArrayList<Student> studentRoster) {
-        OptionalDouble average = studentRoster.stream()
+        double average = studentRoster.stream()
                 .mapToInt(Student::getAge)
-                .average();
+                .average()
+                .orElse(0);
         
-        System.out.printf("Mean Student Age: %.2f\n", average.orElse(0));
-    }
-}
-
-class Student {
-    private String id;
-    private String name;
-    private int age;
-    private List<String> enrolledCourses;
-
-    public Student(String id, String name, int age, List<String> courses) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.enrolledCourses = new ArrayList<>(courses);
-    }
-
-    public void addCourse(String course) {
-        enrolledCourses.add(course);
-    }
-
-    public String getStudentId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public List<String> getCourses() {
-        return enrolledCourses;
-    }
-
-    public void display() {
-        System.out.printf("Student ID: %s, Name: %s, Age: %d, Courses: %s\n", id, name, age, String.join(", ", enrolledCourses));
+        System.out.printf("Mean Student Age: %.2f\n", average);
     }
 }

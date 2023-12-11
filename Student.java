@@ -7,11 +7,20 @@ public class Student {
     private int age;
     private List<String> courses;
 
+    // Existing constructor
     public Student(String studentId, String name, int age) {
         this.studentId = studentId;
         this.name = name;
         this.age = age;
         this.courses = new ArrayList<>();
+    }
+
+    // New constructor that matches the call from StudentManagementSystem
+    public Student(String studentId, String name, int age, List<String> courses) {
+        this.studentId = studentId;
+        this.name = name;
+        this.age = age;
+        this.courses = new ArrayList<>(courses); // Make a copy of the provided list
     }
 
     public void addCourse(String course) {
@@ -38,7 +47,7 @@ public class Student {
         return courses;
     }
 
-    public void displayStudentDetails() {
+    public void display() {
         System.out.println("Student ID: " + studentId + ", Name: " + name + ", Age: " + age + ", Courses: " + courses);
     }
 }

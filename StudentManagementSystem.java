@@ -1,67 +1,92 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.OptionalDouble;
 
 public class StudentManagementSystem {
 
     public static void main(String[] args) {
         
-        List<Student> students = new ArrayList<>();
-        
-
-        Student student1 = new Student("S001", "Pedro", 28);
-        student1.addCourse("Mathematics");
-        student1.addCourse("Computer Science");
-        students.add(student1);
-
-        Student student2 = new Student("S002", "Camila", 25);
-        student2.addCourse("Physics");
-        student2.addCourse("Computer Science");
-        students.add(student2);
-
-        Student student3 = new Student("S003", "Luana", 19);
-        student3.addCourse("Literature");
-        student3.addCourse("Biology");
-        students.add(student3);
-
-        Student student4 = new Student("S004", "Gustavo", 22);
-        student4.addCourse("Economics");
-        student4.addCourse("History");
-        students.add(student4);
+        ArrayList<Student> studentRoster = new ArrayList<>();
 
         
-        students.forEach(Student::displayStudentDetails);
+        studentRoster.add(new Student("S001", "Pedro", 28, List.of("Anatomy", "Biochemistry")));
+        studentRoster.add(new Student("S002", "Camila", 25, List.of("Pharmacology", "Neuroscience")));
+        studentRoster.add(new Student("S003", "Luana", 32, List.of("Physiology", "Genetics")));
+        studentRoster.add(new Student("S004", "Gustavo", 47, List.of("Public Health", "Epidemiology")));
+
+       
+        studentRoster.forEach(Student::display);
 
         
-        findStudentsInCourse(students, "Computer Science");
+        displayStudentsEnrolledInCourse(studentRoster, "Anatomy");
 
         
-        updateStudentAge(students, "S001", 24);
+        setStudentAge(studentRoster, "S001", 24);
 
-        
-        displayAverageAge(students);
+       
+        displayMeanStudentAge(studentRoster);
     }
 
-    private static void findStudentsInCourse(List<Student> students, String course) {
-        List<Student> enrolledStudents = students.stream()
-                .filter(s -> s.getCourses().contains(course))
-                .collect(Collectors.toList());
-        System.out.println("Students enrolled in " + course + ":");
-        enrolledStudents.forEach(Student::displayStudentDetails);
+    private static void displayStudentsEnrolledInCourse(ArrayList<Student> studentRoster, String course) {
+        studentRoster.stream()
+                .filter(student -> student.getCourses().contains(course))
+                .forEach(Student::display);
     }
 
-    private static void updateStudentAge(List<Student> students, String studentId, int newAge) {
-        students.stream()
-                .filter(s -> s.getStudentId().equals(studentId))
+    private static void setStudentAge(ArrayList<Student> studentRoster, String studentId, int age) {
+        studentRoster.stream()
+                .filter(student -> studentId.equals(student.getStudentId()))
                 .findFirst()
-                .ifPresent(s -> s.setAge(newAge));
+                .ifPresent(student -> student.setAge(age));
     }
 
-    private static void displayAverageAge(List<Student> students) {
-        double averageAge = students.stream()
+    private static void displayMeanStudentAge(ArrayList<Student> studentRoster) {
+        OptionalDouble average = studentRoster.stream()
                 .mapToInt(Student::getAge)
-                .average()
-                .orElse(0);
-        System.out.println("Average Age: " + averageAge);
+                .average();
+        
+        System.out.printf("Mean Student Age: %.2f\n", average.orElse(0));
+    }
+}
+
+class Student {
+    private String id;
+    private String name;
+    private int age;
+    private List<String> enrolledCourses;
+
+    public Student(String id, String name, int age, List<String> courses) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.enrolledCourses = new ArrayList<>(courses);
+    }
+
+    public void addCourse(String course) {
+        enrolledCourses.add(course);
+    }
+
+    public String getStudentId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public List<String> getCourses() {
+        return enrolledCourses;
+    }
+
+    public void display() {
+        System.out.printf("Student ID: %s, Name: %s, Age: %d, Courses: %s\n", id, name, age, String.join(", ", enrolledCourses));
     }
 }
